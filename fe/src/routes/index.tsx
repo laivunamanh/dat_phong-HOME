@@ -11,6 +11,7 @@ import ProductEditPage from "@/pages/(dashboard)/products/edit/page";
 import ProductsManagementPage from "@/pages/(dashboard)/products/page";
 import NotFoundPage from "@/pages/(website)/404/page";
 import ProductDetail from "@/pages/(website)/home/chitiet/page";
+import HomePgae from "@/pages/(website)/home/HomePage";
 import HomePage from "@/pages/(website)/home/page";
 import Trangchu from "@/pages/(website)/home/trang_chu.tsx/pagehom";
 
@@ -23,7 +24,7 @@ const Router = () => {
     <Routes>
       {/* Website Routes */}
       <Route path="/" element={<LayoutWebsite />}>
-        <Route index element={<HomePage />} />
+        {/* <Route index element={<HomePage />} /> */}
       </Route>
 
       {/* Admin Routes */}
@@ -42,14 +43,15 @@ const Router = () => {
 
       {/* Home Routes */}
       <Route path="/home" element={<LayOutHome />}>
+        <Route path="page" element={<HomePage />} />
         <Route path="product" element={<Trangchu />} />
         <Route path="product/:id" element={<ProductDetail />} />
+        <Route path="register" element={<Register />} />
+        <Route path="login" element={<Login />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
-      
 
       {/* 404 Not Found */}
-      
     </Routes>
   );
 };

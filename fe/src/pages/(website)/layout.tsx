@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import {
   AlignLeftOutlined,
-  LaptopOutlined,
-  NotificationOutlined,
+  MenuUnfoldOutlined,
+  MenuFoldOutlined,
 } from "@ant-design/icons";
-import { Menu, Layout, theme, Skeleton } from "antd";
+import { Menu, Layout, theme, Skeleton, Button } from "antd";
 import { useQuery } from "@tanstack/react-query";
 import instance from "@/configs/axios";
 import { Link, Outlet } from "react-router-dom";
+
+const { Header, Content, Footer, Sider } = Layout;
 
 // Fetch categories from the API
 const fetchCategories = async () => {
@@ -19,8 +21,6 @@ const fetchCategories = async () => {
   }
 };
 
-const { Header, Content, Footer, Sider } = Layout;
-
 interface Category {
   _id: string;
   name: string;
@@ -31,7 +31,7 @@ const LayOutHome: React.FC = () => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
-  
+
   const {
     data: categories = [],
     isLoading,
@@ -43,45 +43,33 @@ const LayOutHome: React.FC = () => {
   });
 
   const [menuItems, setMenuItems] = useState<any[]>([]);
+  const [collapsed, setCollapsed] = useState(false); // State để ẩn/hiện menu
 
   useEffect(() => {
     if (categories && categories.length > 0) {
-      // Mapping categories to menu items
-      const items2 = categories.map((category, index) => {
-        return {
-          key: `sub${index + 1}`,
-          icon: React.createElement(AlignLeftOutlined), // You can customize icons here if needed
-          label: category.name, // Using category name from the API
-          children: category.subCategories?.map((subCategory, j) => {
-            const subKey = `${index + 1}-${j + 1}`;
-            return {
-              key: subKey,
-              label: subCategory.name, // Using subcategory name
-              // Optionally add links for subcategories if needed
-              // You can also adjust the route as required for your application
-              children: [
-                {
-                  key: `${subKey}-link`,
-                  label: <Link to={`/categories/${subCategory._id}`}>View</Link>,
-                },
-              ],
-            };
-          }),
-        };
-      });
-      setMenuItems(items2); // Set the dynamic menu items
+      const items2 = categories.map((category, index) => ({
+        key: `sub${index + 1}`,
+        icon: <AlignLeftOutlined />,
+        label: category.name,
+        children: category.subCategories?.map((subCategory, j) => ({
+          key: `${index + 1}-${j + 1}`,
+          label: (
+            <Link to={`/categories/${subCategory._id}`}>
+              {subCategory.name}
+            </Link>
+          ),
+        })),
+      }));
+      setMenuItems(items2);
     }
   }, [categories]);
 
-  // Show error message if there is an issue fetching the categories
   if (isError) {
     return (
-      <div>
-        <h2>
-          Error loading categories:{" "}
-          {error instanceof Error ? error.message : "Unknown error"}
-        </h2>
-      </div>
+      <h2>
+        Error loading categories:{" "}
+        {error instanceof Error ? error.message : "Unknown error"}
+      </h2>
     );
   }
 
@@ -94,23 +82,34 @@ const LayOutHome: React.FC = () => {
           mode="horizontal"
           defaultSelectedKeys={["2"]}
           items={[
-            { key: "1", label: "Trang Chủ" },
-            { key: "2", label: "Sản Phhẩm" },
-            { key: "3", label: "Đăng Ký" },
-            { key: "4", label: "Đăng nhập" },
+            { key: "1", label: <Link to={`/home/page`}>Sản Phẩm</Link>  },
+            { key: "2", label: <Link to={`/home/product`}>Sản Phẩm</Link> },
+            { key: "3", label: <Link to={`/home/register`}>Đăng ký</Link> },
+            { key: "4", label: <Link to={`/home/login`}>Đăng Nhập</Link> },
             { key: "5", label: "Giỏ Hàng" },
           ]}
           style={{ flex: 1, minWidth: 0 }}
         />
       </Header>
       <Layout>
-        <Sider width={200} style={{ background: colorBgContainer }}>
+        <Sider
+          collapsible
+          collapsed={collapsed}
+          onCollapse={setCollapsed}
+          width={200}
+          style={{ background: colorBgContainer }}
+        >
+          <Button
+            type="text"
+            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            onClick={() => setCollapsed(!collapsed)}
+            style={{ margin: 10 }}
+          />
           {isLoading ? (
             <Skeleton active />
           ) : (
             <Menu
               mode="inline"
-              defaultSelectedKeys={["1"]}
               style={{ height: "100%", borderRight: 0 }}
               items={menuItems}
             />
@@ -127,7 +126,6 @@ const LayOutHome: React.FC = () => {
             }}
           >
             <Outlet />
-            {/* Outlet or Content goes here */}
           </Content>
         </Layout>
       </Layout>

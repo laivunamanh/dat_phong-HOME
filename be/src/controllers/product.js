@@ -6,8 +6,8 @@ export const create = async(req, res) => {
         console.log("Dữ liệu nhận được từ frontend:", req.body); // Log dữ liệu để debug
 
         // Kiểm tra dữ liệu có đầy đủ không
-        const { name, Categories, price, image } = req.body;
-        if (!name || !Categories || !price) {
+        const { name, category, price, image } = req.body;
+        if (!name || !category || !price) {
             return res.status(StatusCodes.BAD_REQUEST).json({
                 error: "Thiếu thông tin bắt buộc (name, category, price)!"
             });

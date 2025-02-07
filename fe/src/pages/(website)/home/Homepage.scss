@@ -1,0 +1,23 @@
+.ant-carousel {
+    width: 100%;
+    max-width: 1200px; // Giới hạn chiều rộng carousel
+    margin: 0 auto; // Căn giữa carousel
+    .slick-slide {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 450px; // Đặt chiều cao ảnh
+        overflow: hidden;
+        border-radius: 12px; // Bo tròn góc
+        img {
+            width: 100%; // Đảm bảo ảnh full width
+            height: 100%; // Full height
+            object-fit: cover; // Giữ tỷ lệ ảnh, không méo
+            border-radius: 12px; // Bo góc ảnh
+            transition: transform 0.3s ease-in-out; // Hiệu ứng zoom nhẹ khi hover
+        }
+        img:hover {
+            transform: scale(1.05); // Zoom nhẹ khi hover
+        }
+    }
+}
